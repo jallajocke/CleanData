@@ -1,4 +1,3 @@
-setwd("C:\\Users\\jolindqv\\OneDrive\\Microsoft\\Studier\\Machine Learning\\Coursera\\John Hopkins\\3 Clean Data\\Project\\CleanData\\")
 
 # Import data
 testFile <- ".\\UCI HAR Dataset\\test\\X_test.txt"
@@ -38,17 +37,8 @@ mergedData <- rbind(testData, trainData)
 mergedLData <- rbind(testLData, trainLData)
 mergedSData <- rbind(testSData, trainSData)
 
-#testData <- NULL
-#testLData <- NULL
-#testSData <- NULL
-
-#trainData <- NULL
-#trainLData <- NULL
-#trainSData <- NULL
-
 # Add appropriate column names
 colnames(mergedData) <- featuresData$V2
-
 
 # Extract only measurements on the mean and standard deviation
 isMeanOrStd <- function(x) {
@@ -59,29 +49,20 @@ isMeanOrStd <- function(x) {
 }
 columnsMeanAndStd <- featuresData[isMeanOrStd(featuresData$V2),]
 featuresMeanAndStd <- mergedData[,columnsMeanAndStd$V1]
-featuresData <- NULL
-mergedData <- NULL
-columnsMeanAndStd <- NULL
 
 # Add activity and subject data
 featuresMeanAndStd$activityInt <- mergedLData$V1
 featuresMeanAndStd$subjectInt <- mergedSData$V1
-mergedLData <- NULL
-mergedSData <- NULL
 
 # Add descriptive activity names
 replaceName <- function(valueIndex, nameTable, nameColumn){
   nameTable[valueIndex, nameColumn]
 }
 featuresMeanAndStd$activityInt <- replaceName(featuresMeanAndStd$activityInt, activityData, 2)
-activityData <- NULL
 
 # Aggregate the average of each variable for each activity and each subject
 byList = list(activity = featuresMeanAndStd$activityInt, subject = featuresMeanAndStd$subject)
 tidyData <- aggregate(featuresMeanAndStd, by=byList, mean)
-tidyData$activityInt <- NULL
-tidyData$subjectInt <- NULL
-featuresMeanAndStd <- NULL
 
 # Export data set
 tidyDataFile <- "tidy_data.txt"
